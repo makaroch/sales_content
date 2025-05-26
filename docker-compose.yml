@@ -22,8 +22,8 @@ services:
     #      - media_volume:/macaroch/media
     expose:
       - "8000"
-    env_file:
-      - .env
+#    env_file:
+#      - .env
     command: >
       sh -c "python ./manage.py migrate &&
              python ./manage.py collectstatic --noinput && 
