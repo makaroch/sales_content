@@ -4,8 +4,8 @@ services:
   db:
     image: postgres:17
     container_name: postgres_db
-    #    volumes:
-    #      - ~/.pg/pg_data/root:/var/lib/postgresql/data
+    volumes:
+      - /root/py_pr/bot_db_data:/var/lib/postgresql/data
     env_file:
       - .env
   django_prod:
