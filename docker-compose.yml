@@ -1,0 +1,59 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:17
+    container_name: postgres_db
+    #    volumes:
+    #      - ~/.pg/pg_data/root:/var/lib/postgresql/data
+    env_file:
+      - .env
+  django_prod:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./adminka/
+    image: django_image
+    restart: always
+    container_name: django_cont
+    depends_on:
+      - db
+    volumes:
+      - static_volume:/macaroch/static
+    #      - media_volume:/macaroch/media
+    expose:
+      - "8000"
+    env_file:
+      - .env
+    command: >
+      sh -c "python ./manage.py migrate &&
+             python ./manage.py collectstatic --noinput && 
+             python ./manage.py createsuperuser --noinput && 
+             gunicorn adminka.wsgi:application --bind 0.0.0.0:8000"
+  nginx:
+    image: nginx:latest
+    container_name: macaroch_nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - static_volume:/macaroch/static
+#      - media_volume:/macaroch/media
+    depends_on:
+      - django_prod
+    ports:
+      - "80:80"
+      - "443:443"
+  bot:
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    container_name: bot_cont
+    image: bot_img
+    env_file:
+      - .env
+    depends_on:
+      - django_prod
+    command: >
+      python main.py
+
+volumes:
+  static_volume:
+
