@@ -1,4 +1,5 @@
 import io
+import json
 from datetime import date, datetime
 
 from aiogram import Router, F, Bot, types
@@ -55,7 +56,26 @@ async def start_message(chat_id, bot: Bot, username):
 
 
 async def send_invoice_message(chat_id, bot: Bot, price):
-    price_label = types.LabeledPrice(label="Подписка на 1 месяц", amount=price * 100)  # в копейках
+    provider_data = {
+        "receipt": {
+            "items": [
+                {
+                    "description": "Подписка на канал",
+                    "quantity": '1.00',
+                    "amount": {
+                        "value": f"{price}.00",
+                        "currency": "RUB"
+                    },
+                    "vat_code": 1,
+                    "payment_mode": "full_payment",
+                    "payment_subject": "commodity"
+                }
+            ],
+            "tax_system_code": 1
+        }
+    }
+
+    price_label = types.LabeledPrice(label="Подписка на канал", amount=price * 100)
     await bot.send_invoice(
         chat_id,
         title="Подписка на канал",
@@ -64,8 +84,11 @@ async def send_invoice_message(chat_id, bot: Bot, price):
         currency="rub",
         is_flexible=False,
         prices=[price_label, ],
-        start_parameter="one-month-subscription",
-        payload="test-invoice-payload"
+        start_parameter="subscription",
+        payload="invoice-payload",
+        need_email=True,
+        send_email_to_provider=True,
+        provider_data=json.dumps(provider_data)
     )
 
 
