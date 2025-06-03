@@ -78,8 +78,8 @@ async def send_invoice_message(chat_id, bot: Bot, price):
     price_label = types.LabeledPrice(label="Подписка на канал", amount=price * 100)
     await bot.send_invoice(
         chat_id,
-        title="Подписка на канал",
-        description="Активация подписки на канал.",
+        title="Доступ к курсу",
+        description="После оплаты вы получите ссылку на курс",
         provider_token=APP_SETTINGS.PAYMENTS_TOKEN_TEST,
         currency="rub",
         is_flexible=False,
@@ -142,7 +142,7 @@ async def successful_payment(message: types.Message, bot: Bot):
 
     await message.answer(
         text=f"Платеж прошел успешно!!!\n"
-             f"Спасибо за подписку! <a href='{pay.url}'>Вот ссылка на наш канал!</a>"
+             f"<a href='{pay.url}'>Нажмите, чтобы начать обучение.\n👆🏼</a>"
     )
 
 
