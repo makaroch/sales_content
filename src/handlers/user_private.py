@@ -164,6 +164,7 @@ async def keyboard_reaction(message: Message, bot: Bot):
         return
 
     await message.answer(
-        text=pay.message
+        text=pay.message,
+        disable_web_page_preview=True
     )
     await send_invoice_message(chat_id=message.chat.id, bot=bot, price=pay.price)
