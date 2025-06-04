@@ -43,7 +43,8 @@ async def start_message(chat_id, bot: Bot, username):
     await bot.send_message(
         chat_id=chat_id,
         text=text,
-        reply_markup=create_start_keyboard_down()
+        reply_markup=create_start_keyboard_down(),
+        disable_web_page_preview=True
     )
 
     all_document = BinaryDocumentDAO.find_all(status_file=Status.FREE.value)
